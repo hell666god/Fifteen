@@ -32,7 +32,7 @@ public class GameGrid {
 
         grid.setLayout(new GridLayout(4,4));
         grid.setPreferredSize(new Dimension(350,350));
-
+        
         createButtons(numGrid);
 
         for(GameButton[] tmpButtons: buttons){

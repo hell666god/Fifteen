@@ -6,6 +6,8 @@ import com.hellgod.fifteen.gui.GameGrid;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Random;
@@ -17,7 +19,7 @@ import javax.swing.JPanel;
  */
 
 //"Мозг" игры
-public class GameController implements ActionListener{
+public class GameController extends KeyAdapter implements ActionListener{
 
     private GameGrid gameGrid;
     private Component panel;
@@ -44,10 +46,12 @@ public class GameController implements ActionListener{
         gameGrid.createGameGrid(numGrid);
         
         panel = (JPanel) gameGrid.getGrid();
+        panel.addKeyListener(this);
         buttons = gameGrid.getButtons();
         for(int y=0; y<buttons.length; y++){
             for(int x=0; x<buttons[y].length; x++){
                 buttons[y][x].addActionListener(this);
+                buttons[y][x].addKeyListener(this);
             }
         }
         
@@ -65,19 +69,19 @@ public class GameController implements ActionListener{
         numGrid = new Integer[4][4];
         
         ArrayList<Integer> tmpList = new ArrayList<>(16);
-        while(tmpList.size() != 16){
-            num = random.nextInt(16);
-            if(!tmpList.contains(num)){
-                tmpList.add(num);
-            }
-        }
-
-//        Для быстрой Проверки работоспособности
-//        for(int i=1;i<15;i++){
-//            tmpList.add(i);
+//        while(tmpList.size() != 16){
+//            num = random.nextInt(16);
+//            if(!tmpList.contains(num)){
+//                tmpList.add(num);
+//            }
 //        }
-//        tmpList.add(0);
-//        tmpList.add(15);
+
+        //Для быстрой Проверки работоспособности
+        for(int i=1;i<15;i++){
+            tmpList.add(i);
+        }
+        tmpList.add(0);
+        tmpList.add(15);
         
         Iterator iterator = tmpList.iterator();
         for(int y=0; y<4; y++){
@@ -168,6 +172,8 @@ public class GameController implements ActionListener{
 //        printNumGrid();
     }
     
+    
+    
 //      проверка правильности пермещения
 //    private void printNumGrid() {
 //        for(Integer[] nums : numGrid){
@@ -178,4 +184,43 @@ public class GameController implements ActionListener{
 //        }
 //        System.out.println("");
 //    }
+
+    @Override
+    public void keyPressed(KeyEvent e) {
+        System.out.println(e);
+        switch(e.getKeyCode()){
+            case KeyEvent.VK_UP:{
+                System.out.println(e);
+                GameButton nullBtn = nullButton();
+                GameButton swapBtn = buttons[nullBtn.getCoordinate().getY()+1][nullBtn.getCoordinate().getX()];
+                swapButtons(swapBtn, nullBtn);
+                swapNumber(nullBtn.getCoordinate(), swapBtn.getCoordinate());
+                break;
+            }
+            case KeyEvent.VK_DOWN:{
+                System.out.println(e);
+                GameButton nullBtn = nullButton();
+                GameButton swapBtn = buttons[nullBtn.getCoordinate().getY()-1][nullBtn.getCoordinate().getX()];
+                swapButtons(swapBtn, nullBtn);
+                swapNumber(nullBtn.getCoordinate(), swapBtn.getCoordinate());
+                break;
+            }
+            case KeyEvent.VK_LEFT:{
+                System.out.println(e);
+                GameButton nullBtn = nullButton();
+                GameButton swapBtn = buttons[nullBtn.getCoordinate().getY()][nullBtn.getCoordinate().getX()+1];
+                swapButtons(swapBtn, nullBtn);
+                swapNumber(nullBtn.getCoordinate(), swapBtn.getCoordinate());
+                break;
+            }
+            case KeyEvent.VK_RIGHT:{
+                System.out.println(e);
+                GameButton nullBtn = nullButton();
+                GameButton swapBtn = buttons[nullBtn.getCoordinate().getY()][nullBtn.getCoordinate().getX()-1];
+                swapButtons(swapBtn, nullBtn);
+                swapNumber(nullBtn.getCoordinate(), swapBtn.getCoordinate());
+                break;
+            }
+        }
+    }
 }
